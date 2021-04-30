@@ -4,7 +4,7 @@
 import numpy as np
 import matplotlib as mpl
 import scipy.stats
-mpl.use('pgf')
+# mpl.use('pgf')
 
 def figsize(scale, ratio=None):
     fig_width_pt = 397.4849                         # Get this from LaTeX using \the\textwidth
@@ -14,7 +14,7 @@ def figsize(scale, ratio=None):
         golden_mean = ratio
     fig_width = fig_width_pt*inches_per_pt*scale    # width in inches
     fig_height = fig_width*golden_mean              # height in inches
-    fig_size = [fig_width,fig_height]
+    fig_size = [fig_width, fig_height]
     return fig_size
 
 pgf_with_latex = {                      # setup matplotlib to use latex for output
@@ -40,7 +40,7 @@ pgf_with_latex = {                      # setup matplotlib to use latex for outp
         r"\usepackage{amsmath}",
     ]
 }
-mpl.rcParams.update(pgf_with_latex)
+# mpl.rcParams.update(pgf_with_latex)
 
 grey = '#808080'
 
@@ -102,10 +102,11 @@ def plot_model(model, ax, cur_x, cur_y, pred_x, seen_x=None, seen_y=None):
 def get_data(shuffle):
     X = np.loadtxt('../data/reg_toy_x.txt', delimiter=',')
     y = np.loadtxt('../data/reg_toy_y.txt', delimiter=',')
+
     X = X.reshape(X.shape[0], 1)
     y = y.reshape((y.shape[0], 1))
     N = y.shape[0]
-    gap = N/3
+    gap = round(N/3)
     X[:gap, :] = X[:gap, :] - 1
     X[2*gap:3*gap, :] = X[2*gap:3*gap, :] + 1
     if shuffle:
@@ -121,7 +122,7 @@ def plot_PEP_optimized(M, alpha, use_old_Z, shuffle):
     X, y = get_data(shuffle)
 
     N = X.shape[0]
-    gap = N/3
+    gap = round(N/3)
     # get the first portion and call sparse GP regression
     X1 = X[:gap, :]
     y1 = y[:gap, :]
@@ -202,7 +203,7 @@ def plot_PEP_optimized(M, alpha, use_old_Z, shuffle):
     mu4, Su4, Zopt = plot_model(model4, axs[3], X, y, xx, None, None)
     axs[3].set_xlabel('x')
 
-    fig.savefig('../tmp/reg_PEP_alpha_%.3f_M_%d_iid_%r.png' % (alpha, M, shuffle), bbox_inches='tight')
+    fig.savefig('../tmp/1_reg_PEP_alpha_%.3f_M_%d_iid_%r.png' % (alpha, M, shuffle), bbox_inches='tight')
 
 
 def plot_VFE_optimized(M, use_old_Z, shuffle):
@@ -212,7 +213,7 @@ def plot_VFE_optimized(M, use_old_Z, shuffle):
     X, y = get_data(shuffle)
 
     N = X.shape[0]
-    gap = N/3
+    gap = round(N/3)
 
     # get the first portion and call sparse GP regression
     X1 = X[:gap, :]
@@ -229,7 +230,7 @@ def plot_VFE_optimized(M, use_old_Z, shuffle):
     model1.optimize(disp=1)
 
     # plot prediction
-    xx = np.linspace(-2, 12, 100)[:,None]
+    xx = np.linspace(-2, 12, 100)[:, None]
     mu1, Su1, Zopt = plot_model(model1, axs[0], X1, y1, xx, seen_x, seen_y)
     
     # now call online method on the second portion of the data
@@ -291,7 +292,7 @@ def plot_VFE_optimized(M, use_old_Z, shuffle):
     xx = np.linspace(-2, 12, 100)[:,None]
     mu4, Su4, Zopt4 = plot_model(model4, axs[3], X, y, xx, None, None)
     axs[3].set_xlabel('x')
-    fig.savefig('../tmp/reg_VFE_M_%d_iid_%r.png' % (M, shuffle), bbox_inches='tight')
+    fig.savefig('../tmp/1_reg_VFE_M_%d_iid_%r.png' % (M, shuffle), bbox_inches='tight')
 
 
 if __name__ == '__main__':
